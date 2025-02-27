@@ -46,10 +46,10 @@ export default class CartItem extends Model {
   quantity!: number;
 
   // Association with Cart and Product model
-  @BelongsTo(() => Cart)
+  @BelongsTo(() => Cart, { as: "cart" })
   cart!: Cart;
 
-  @BelongsTo(() => Product)
+  @BelongsTo(() => Product, { as: "product" })
   product!: Product;
 
   @CreatedAt

@@ -15,35 +15,47 @@ const createOrder = async (userId: string) => {
       throw new Error("User not found");
     }
 
-    // Get user's cart
     const cart = await Cart.findOne({
       where: { userId },
       include: [
         {
           model: CartItem,
-          include: [Product],
+          as: "cartitems",
+          include: [
+            {
+              model: Product,
+              as: "product",
+              required: true,
+              attributes: ["id", "productName", "price"],
+            },
+          ],
+          required: true,
         },
       ],
       transaction,
     });
 
-    if (
-      !cart ||
-      !cart.get("CartItems") ||
-      (cart.get("CartItems") as CartItem[]).length === 0
-    ) {
-      await transaction.rollback();
+    console.log("🛒 Full Cart Data:", JSON.stringify(cart, null, 2));
+
+    if (!cart || !cart.cartitems || cart.cartitems.length === 0) {
       throw new Error("Cart is empty");
     }
 
-    const cartItems = cart.get("CartItems") as (CartItem & {
-      Product: Product;
-    })[];
+    const cartItems = cart.cartitems as (CartItem & { Product: Product })[];
+    console.log("cartItems Result:", cartItems);
 
     // Calculate total amount
     let totalAmount = 0;
-    for (const item of cartItems) {
-      totalAmount += item.Product.price * item.quantity;
+
+    for (const item of cart.cartitems) {
+      const product = await Product.findByPk(item.productId, { transaction });
+
+      if (!product) {
+        console.error("❌ Product not found for cart item:", item);
+        throw new Error("Product data missing for cart item.");
+      }
+
+      totalAmount += product.price * item.quantity;
     }
 
     // Create order

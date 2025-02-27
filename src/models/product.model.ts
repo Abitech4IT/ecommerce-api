@@ -50,7 +50,7 @@ export default class Product extends Model {
   quantity!: number;
 
   @HasMany(() => CartItem)
-  cartItems!: CartItem[];
+  cartitems!: CartItem[];
 
   @CreatedAt
   createdAt!: Date;
