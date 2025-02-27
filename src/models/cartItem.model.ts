@@ -7,9 +7,7 @@ import {
   UpdatedAt,
   ForeignKey,
   BelongsTo,
-  HasOne,
 } from "sequelize-typescript";
-import User from "./user.model";
 import Cart from "./cart.model";
 import Product from "./product.model";
 
@@ -45,7 +43,7 @@ export default class CartItem extends Model {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  quantity!: string;
+  quantity!: number;
 
   // Association with Cart and Product model
   @BelongsTo(() => Cart)

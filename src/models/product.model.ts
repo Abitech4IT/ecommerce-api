@@ -5,7 +5,9 @@ import {
   DataType,
   CreatedAt,
   UpdatedAt,
+  HasMany,
 } from "sequelize-typescript";
+import CartItem from "./cartItem.model";
 
 @Table({
   tableName: "products",
@@ -46,6 +48,9 @@ export default class Product extends Model {
     allowNull: false,
   })
   quantity!: number;
+
+  @HasMany(() => CartItem)
+  cartItems!: CartItem[];
 
   @CreatedAt
   createdAt!: Date;
