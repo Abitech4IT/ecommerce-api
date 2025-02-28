@@ -37,7 +37,7 @@ export default class Cart extends Model {
   user!: User;
 
   // Add this relationship
-  @HasMany(() => CartItem, { foreignKey: "cartId", as: "cartitems" })
+  @HasMany(() => CartItem, { as: "cartitems" })
   cartitems!: CartItem[];
 
   @CreatedAt

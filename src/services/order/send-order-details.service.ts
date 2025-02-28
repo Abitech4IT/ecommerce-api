@@ -24,18 +24,39 @@ const sendOrderDetailsEmail = async ({
   // Send user order details
   const emailSubject = "Order Confirmation";
   const emailHtml = `
-      <h1>Order Confirmation</h1>
-        <p>Dear ${firstName} ${lastName},</p>
-        <p>Thank you for your order. We are pleased to confirm your purchase.</p>
-        <h2>Order Details</h2>
-        <p><strong>Order ID:</strong> #${orderId}</p>
-        <p><strong>Order Date:</strong> ${orderDate.toLocaleDateString()}</p>
-        <p><strong>Total Amount:</strong> $${totalAmount.toFixed(2)}</p>
-        <h3>Items Purchased:</h3>
-        <pre>${itemsList}</pre>
-        <p>Your order will be processed shortly.</p>
-        <p>Thank you for shopping with us!</p>
-    `;
+  <h1>Order Confirmation</h1>
+  <p>Dear ${firstName} ${lastName},</p>
+  <p>Thank you for your order. We are pleased to confirm your purchase.</p>
+  <h2>Order Details</h2>
+  <p><strong>Order ID:</strong> #${orderId}</p>
+  <p><strong>Order Date:</strong> ${orderDate.toLocaleDateString()}</p>
+  <p><strong>Total Amount:</strong> $${totalAmount.toFixed(2)}</p>
+  <h3>Items Purchased:</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Total Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${itemsList
+        ?.map(
+          (item) => `
+        <tr>
+          <td>${item.productName}</td>
+          <td>$${item.price.toFixed(2)}</td>
+          <td>$${item.totalPrice.toFixed(2)}</td>
+        </tr>
+      `
+        )
+        .join("")}
+    </tbody>
+  </table>
+  <p>Your order will be processed shortly.</p>
+  <p>Thank you for shopping with us!</p>
+`;
 
   if (email) {
     const [emailResult, emailError] = await mailService.sendMail({

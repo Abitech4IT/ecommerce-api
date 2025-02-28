@@ -49,7 +49,7 @@ export default class Product extends Model {
   })
   quantity!: number;
 
-  @HasMany(() => CartItem)
+  @HasMany(() => CartItem, { as: "cartitems" })
   cartitems!: CartItem[];
 
   @CreatedAt

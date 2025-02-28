@@ -19,7 +19,7 @@ export const sendMail = async (
 
   var mailOptions: Mail.Options = {
     from: { address: emailAddress, name: process.env.EMAIL_NAME ?? "" },
-    to: process.env.EMAIL_TO ?? "",
+    to: options.to,
     subject: options.subject,
     text: options.text,
     html: options.html,

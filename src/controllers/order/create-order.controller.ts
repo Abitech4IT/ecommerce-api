@@ -15,6 +15,10 @@ export const create = catchAsync(
       userAuthItems.userId!
     );
 
+    if (!authenticatedUser) {
+      return next(new Error("Authenticated user not found"));
+    }
+
     const order = await orderService.repo.createOrder(authenticatedUserId);
 
     if (!order) {

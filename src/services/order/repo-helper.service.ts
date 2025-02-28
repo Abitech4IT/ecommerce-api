@@ -25,14 +25,13 @@ const createOrder = async (userId: string) => {
             {
               model: Product,
               as: "product",
-              required: true,
               attributes: ["id", "productName", "price"],
             },
           ],
-          required: true,
         },
       ],
       transaction,
+      logging: console.log,
     });
 
     console.log("🛒 Full Cart Data:", JSON.stringify(cart, null, 2));
@@ -48,14 +47,12 @@ const createOrder = async (userId: string) => {
     let totalAmount = 0;
 
     for (const item of cart.cartitems) {
-      const product = await Product.findByPk(item.productId, { transaction });
-
-      if (!product) {
+      if (!item.product) {
         console.error("❌ Product not found for cart item:", item);
         throw new Error("Product data missing for cart item.");
       }
 
-      totalAmount += product.price * item.quantity;
+      totalAmount += item.product.price * item.quantity;
     }
 
     // Create order
@@ -69,13 +66,13 @@ const createOrder = async (userId: string) => {
     );
 
     // Create order items
-    for (const item of cartItems) {
+    for (const item of cart.cartitems) {
       await OrderItem.create(
         {
           orderId: order.id,
           productId: item.productId,
           quantity: item.quantity,
-          price: item.Product.price,
+          price: item.product.price, // Use the included product data
         },
         { transaction }
       );
